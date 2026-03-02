@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
@@ -19,5 +19,5 @@ app.use('/api', routes);
 
 app.get('/', (req, res) => res.json({ status: 'ok' }));
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server escuchando en http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server escuchando en el puerto ${PORT}`));
