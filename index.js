@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import routes from './routes/weatherRoutes.js';
@@ -21,6 +24,6 @@ app.use('/api', routes);
 // Ruta de prueba
 app.get('/', (req, res) => res.json({ status: 'ok' }));
 
-// Puerto para Railway
-const PORT = process.env.PORT || 3000;
+// Puerto preferido por Railway o default a 3001 para local
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server escuchando en el puerto ${PORT}`));
