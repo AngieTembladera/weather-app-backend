@@ -26,6 +26,9 @@ app.get('/', (req, res) => res.json({ status: 'ok' }));
 
 // Puerto preferido por Railway o default a 3001 para local
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server escuchando en el puerto ${PORT}`));
-console.log("Todas las variables disponibles:");
-console.log(Object.keys(process.env));
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server escuchando en el puerto ${PORT}`);
+});
+
+
