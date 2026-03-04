@@ -1,26 +1,27 @@
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import mysql from "mysql2";
+import dotenv from "dotenv";
 dotenv.config();
 
-// Conexión usando variables de entorno (compatibilidad Railway + Local)
-export const con = mysql.createConnection({
-  host: process.env.DB_HOST || '127.0.0.1',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'weatherdb',
-  port: process.env.DB_PORT || 3306
+// Crear pool en lugar de una sola conexión
+export const pool = mysql.createPool({
+  host: process.env.DB_HOST || "127.0.0.1",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "weatherdb",
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-con.connect((err) => {
+// Verificar conexión inicial (opcional pero recomendado)
+pool.getConnection((err, connection) => {
   if (err) {
-    console.error('Error al conectar a MySQL:', err);
+    console.error("Error al conectar a MySQL:", err);
     return;
   }
-  console.log('Conectado a MySQL');
+  console.log("Pool de MySQL conectado correctamente");
+  connection.release(); // Muy importante liberar conexión
 });
 
-con.on('error', (err) => {
-  console.error('MySQL connection error (capturado):', err);
-});
-
-export default con;
+export default pool;

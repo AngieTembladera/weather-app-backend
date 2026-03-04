@@ -1,5 +1,5 @@
 import axios from "axios";
-import { con as db } from "../db.js";
+import pool from "../db.js";
 
 const WEATHERCODE_MAP = {
   0: "cielo claro",
@@ -99,7 +99,7 @@ export const getWeather = async (req, res) => {
       sunset: null,
     };
 
-    db.query(
+    pool.query(
       `INSERT INTO weather_history (city, temperature, description, humidity, wind_speed) VALUES (?, ?, ?, ?, ?)`,
       [weather.city, weather.temperature, weather.description, weather.humidity, weather.wind_speed],
       (err) => {
@@ -107,7 +107,7 @@ export const getWeather = async (req, res) => {
       }
     );
 
-    db.query(`INSERT INTO searches (city) VALUES (?)`, [weather.city], (err) => {
+    pool.query(`INSERT INTO searches (city) VALUES (?)`, [weather.city], (err) => {
       if (err) console.error("[getWeather] Error insert searches:", err);
     });
 
@@ -157,7 +157,7 @@ export const getOneCall = async (req, res) => {
     }));
 
     hourly.forEach((h) => {
-      db.query(
+      pool.query(
         `INSERT INTO forecast_hourly (city, dt, temp, feels_like, humidity, pop, wind_speed, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [req.query.city || null, h.dt, h.temp, h.feels_like, h.humidity, h.pop, h.wind_speed, h.weather],
         (err) => {
@@ -167,7 +167,7 @@ export const getOneCall = async (req, res) => {
     });
 
     daily.forEach((d) => {
-      db.query(
+      pool.query(
         `INSERT INTO forecast_daily (city, dt, temp_min, temp_max, humidity, pop, wind_speed, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [req.query.city || null, d.dt, d.temp_min, d.temp_max, d.humidity, d.pop, d.wind_speed, d.description],
         (err) => {
@@ -219,7 +219,7 @@ export const getAirQuality = async (req, res) => {
 
     const aqi = data.hourly?.us_aqi?.[lastIdx] ?? null;
 
-    db.query(
+    pool.query(
       `INSERT INTO air_quality_history (city, aqi, pm2_5, pm10, co, no2, o3) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [req.query.city || null, aqi, components.pm2_5, components.pm10, components.co, components.no2, components.o3],
       (err) => {
